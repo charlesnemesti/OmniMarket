@@ -1,103 +1,167 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Shell } from "@/components/Shell";
+import { DropCard } from "@/components/DropCard";
+import { CrownCard } from "@/components/CrownCard";
+import { brand } from "@/lib/brand";
+import { computeStats, fetchDrops, partitionDrops } from "@/lib/drops";
+import { fmtEth, fmtUsdCompact } from "@/lib/format";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const drops = await fetchDrops();
+  const { bidding, onCurve, crowns } = partitionDrops(drops);
+  const stats = computeStats(drops);
+
+  const statItems = [
+    { label: "Committed", value: `${fmtEth(stats.committed)} ETH` },
+    { label: "Launches", value: String(stats.launches) },
+    { label: "24h volume", value: fmtUsdCompact(stats.volume) },
+    { label: "Coups", value: String(stats.coups) },
+    { label: "LP locked", value: `${fmtEth(stats.lpLocked)} ETH` },
+  ];
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <Shell>
+      {/* Hero: brand-first, modular — not PonSea centered soft hero */}
+      <section className="mt-10 grid gap-10 md:grid-cols-[1.35fr_0.65fr] md:items-end">
+        <div>
+          <div
+            className="eyebrow animate-rise"
+            style={{ animationDelay: "0.05s" }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Robinhood Chain · 4663
+          </div>
+          <h1
+            className="mt-4 animate-rise text-[52px] font-bold leading-[0.95] tracking-[-0.05em] md:text-[72px]"
+            style={{ animationDelay: "0.12s" }}
           >
-            Read our docs
-          </a>
+            <span className="animate-neon text-neon">{brand.name}</span>
+          </h1>
+          <p
+            className="mt-4 max-w-[34ch] animate-rise text-[22px] font-medium leading-tight tracking-[-0.02em] text-foam md:text-[28px]"
+            style={{ animationDelay: "0.2s" }}
+          >
+            {brand.tagline}
+          </p>
+          <p
+            className="mt-4 max-w-[48ch] animate-rise text-[15px] leading-relaxed text-mute"
+            style={{ animationDelay: "0.28s" }}
+          >
+            {brand.description}
+          </p>
+          <div
+            className="mt-7 flex flex-wrap gap-3 animate-rise"
+            style={{ animationDelay: "0.36s" }}
+          >
+            <a href="#live" className="btn-primary px-6 py-3 text-[14px]">
+              Browse market
+            </a>
+            <Link href="/docs" className="btn-ghost px-6 py-3 text-[14px]">
+              Mechanics
+            </Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        <div
+          className="animate-rise border border-hairline bg-panel p-5"
+          style={{ animationDelay: "0.3s" }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <div className="font-mono text-[10px] tracking-[0.16em] text-neon">
+            FLOW
+          </div>
+          <ol className="mt-4 space-y-3 font-mono text-[12px] text-mute">
+            <li className="flex gap-3">
+              <span className="text-neon">01</span> Commit ETH to escrow
+            </li>
+            <li className="flex gap-3">
+              <span className="text-neon">02</span> Hit threshold → settle
+            </li>
+            <li className="flex gap-3">
+              <span className="text-neon">03</span> Token launches on Pons
+            </li>
+            <li className="flex gap-3">
+              <span className="text-neon">04</span> Crown earns fee stream
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <div className="section-rule mt-12" />
+
+      <section className="mt-0 grid grid-cols-2 border-x border-b border-hairline md:grid-cols-5">
+        {statItems.map((s) => (
+          <div key={s.label} className="stat-cell border-r border-hairline last:border-r-0">
+            <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-mute">
+              {s.label}
+            </div>
+            <div className="mt-2 text-[18px] font-bold tracking-[-0.02em] text-foam">
+              {s.value}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section id="live" className="mt-16">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="eyebrow">Open raises</div>
+            <h2 className="mt-2 text-[28px] font-bold tracking-[-0.03em]">
+              Live escrow
+            </h2>
+          </div>
+          <p className="max-w-[36ch] text-right font-mono text-[11px] text-mute">
+            {bidding.length} active · miss target = full refund
+          </p>
+        </div>
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {bidding.map((d) => (
+            <DropCard key={d.id} drop={d} />
+          ))}
+        </div>
+      </section>
+
+      <section id="curve" className="mt-16">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="eyebrow">Bonding curve</div>
+            <h2 className="mt-2 text-[28px] font-bold tracking-[-0.03em]">
+              Raising on Pons
+            </h2>
+          </div>
+          <p className="font-mono text-[11px] text-mute">
+            {onCurve.length} toward graduation
+          </p>
+        </div>
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {onCurve.map((d) => (
+            <DropCard key={d.id} drop={d} />
+          ))}
+        </div>
+      </section>
+
+      <section id="court" className="mt-16">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="eyebrow">Fee thrones</div>
+            <h2 className="mt-2 text-[28px] font-bold tracking-[-0.03em]">
+              Crown market
+            </h2>
+          </div>
+          <Link href="/court" className="font-mono text-[12px] text-neon hover:underline">
+            Open court →
+          </Link>
+        </div>
+        <p className="mt-3 max-w-[56ch] text-[14px] text-mute">
+          The 1/1 stays vaulted. Whoever holds the crown collects trading fees —
+          until someone pays the live price and takes it.
+        </p>
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {crowns.slice(0, 3).map((d) => (
+            <CrownCard key={d.id} drop={d} />
+          ))}
+        </div>
+      </section>
+    </Shell>
   );
 }
