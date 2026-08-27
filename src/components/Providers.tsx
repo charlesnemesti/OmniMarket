@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { injected, metaMask, walletConnect } from "wagmi/connectors";
+import { metaMask, walletConnect } from "wagmi/connectors";
 import { robinhoodChain } from "@/lib/chain";
 
 const projectId =
@@ -12,6 +12,7 @@ const projectId =
 
 const config = createConfig({
   chains: [robinhoodChain],
+  multiInjectedProviderDiscovery: true,
   connectors: [
     metaMask({ dappMetadata: { name: "OmniMarket" } }),
     walletConnect({
@@ -23,10 +24,6 @@ const config = createConfig({
         icons: ["https://omnimarket-indol.vercel.app/icon.png"],
       },
       showQrModal: true,
-    }),
-    injected({
-      shimDisconnect: true,
-      unstable_shimAsyncInject: 2_000,
     }),
   ],
   transports: {
