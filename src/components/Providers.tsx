@@ -1,14 +1,34 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { http, WagmiProvider, createConfig } from "wagmi";
-import { injected } from "wagmi/connectors";
 import { useState, type ReactNode } from "react";
+import { WagmiProvider, createConfig, http } from "wagmi";
+import { injected, metaMask, walletConnect } from "wagmi/connectors";
 import { robinhoodChain } from "@/lib/chain";
+
+const projectId =
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ||
+  "00000000000000000000000000000000";
 
 const config = createConfig({
   chains: [robinhoodChain],
-  connectors: [injected({ shimDisconnect: true })],
+  connectors: [
+    metaMask({ dappMetadata: { name: "OmniMarket" } }),
+    walletConnect({
+      projectId,
+      metadata: {
+        name: "OmniMarket",
+        description: "OmniMarket on Robinhood Chain",
+        url: "https://omnimarket-indol.vercel.app",
+        icons: ["https://omnimarket-indol.vercel.app/icon.png"],
+      },
+      showQrModal: true,
+    }),
+    injected({
+      shimDisconnect: true,
+      unstable_shimAsyncInject: 2_000,
+    }),
+  ],
   transports: {
     [robinhoodChain.id]: http("https://rpc.mainnet.chain.robinhood.com"),
   },
