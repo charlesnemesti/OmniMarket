@@ -80,10 +80,7 @@ a.nav-on {
 }
 
 .logo-mark {
-  background: var(--neon);
-  color: #000;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  flex-shrink: 0;
 }
 
 .chip {

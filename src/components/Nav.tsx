@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConnectButton } from "@/components/ConnectButton";
@@ -17,11 +18,16 @@ export function Nav() {
   const pathname = usePathname();
 
   return (
-    <header className="flex items-center justify-between gap-4 border-b border-hairline pb-4 animate-rise">
+    <header className="flex items-center justify-between gap-4 border-b border-hairline pb-4">
       <Link href="/" className="flex items-center gap-3 min-w-0">
-        <span className="logo-mark grid h-9 w-9 place-items-center rounded-md text-[13px]">
-          OM
-        </span>
+        <Image
+          src="/brand/logo.png"
+          alt={`${brand.name} logo`}
+          width={36}
+          height={36}
+          className="logo-mark h-9 w-9 rounded-md object-cover"
+          priority
+        />
         <div className="min-w-0">
           <div className="truncate text-[18px] font-bold tracking-[-0.03em] text-foam">
             {brand.name}
